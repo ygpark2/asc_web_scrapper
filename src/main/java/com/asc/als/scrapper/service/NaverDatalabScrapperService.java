@@ -8,11 +8,11 @@ import com.asc.als.scrapper.exceptions.KeyNotFoundException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -82,28 +82,55 @@ public class NaverDatalabScrapperService implements ScrapperService<String> {
     }
 
     public List<Category> getCategory(Category parent, int index, Optional<String> selectCid) {
+
+        WebDriverWait wait = new WebDriverWait(webDriver, 10);
+
         // 카테고리 버튼 클릭
         List<WebElement> selectBtnList = webDriver.findElements(By.cssSelector("span[class='select_btn']"));
 
-        selectBtnList.get(index).click();
-
         List<WebElement> ulList = webDriver.findElements(By.cssSelector("ul[class='select_list scroll_cst']"));
-        List<WebElement> optionList = ulList.get(index).findElements(By.cssSelector("a[class='option']"));
+
+        if (index > 0) {
+            System.out.println("parent => " + parent);
+            List<WebElement> optionList = ulList.get(index-1).findElements(By.cssSelector("a[class='option']"));
+            optionList.stream().filter(l -> l.getAttribute("data-cid").equals(parent.getCid()))
+                    .findFirst()
+                    .ifPresent(e -> wait.until(ExpectedConditions.visibilityOf(e)).click());
+            System.out.println("index => " + index);
+        }
+
+        selectBtnList.get(index).click();
 
         List<Category> categoryList = new ArrayList<>();
 
+        List<WebElement> optionList = ulList.get(index).findElements(By.cssSelector("a[class='option']"));
+        // Actions action = new Actions(webDriver);
+        // action.moveToElement(option).perform();
         optionList.forEach(option -> {
+            // if (!option.isDisplayed()) {
+            //     ulList.get(index).sendKeys(Keys.PAGE_DOWN);
+            // }
+            // String name = wait.until(ExpectedConditions.visibilityOf(option)).getText();
             String name = option.getText();
             String dataCid = option.getAttribute("data-cid");
+            System.out.println(" name : " + name + ", dataCid : " + dataCid);
             // Root 카테고리
             categoryList.add(new Category(name, dataCid, parent));
         });
 
+        if (index == 2) {
+            selectBtnList.get(index-1).click();
+        }
+        /*
+        System.out.println("parent => " + parent);
         selectCid.ifPresent(c -> {
+            System.out.println("cid => " + c);
+
             optionList.stream().filter(l -> l.getAttribute("data-cid").equals(c))
                     .findFirst()
-                    .ifPresent(e -> e.click());
+                    .ifPresent(e -> wait.until(ExpectedConditions.visibilityOf(e)).click());
         });
+         */
 
         return categoryList;
     }

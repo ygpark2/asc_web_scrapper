@@ -18,12 +18,14 @@
 
 package com.asc.als;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
 import javax.persistence.Entity;
 
+import com.asc.als.domain.Category;
 import com.asc.als.retrofit.naver.api.NaverApi;
 import com.asc.als.scrapper.service.Covid19ScrapperService;
 import com.asc.als.scrapper.service.NaverDatalabScrapperService;
@@ -69,11 +71,21 @@ public class AscAlsApplication {
 		return args -> {
 			System.out.println("++++++++++++++++++++++++= command line runner ++++++++++++++++++++++++++++++++++++");
 			this.naverDatalabScrapper.navigate("https://datalab.naver.com/shoppingInsight/sCategory.naver");
-			this.categoryService.saveAll( this.naverDatalabScrapper.getCategory(null, 0, Optional.of("50000002")) );
+            List<Category> firstCategoryList = this.categoryService.saveAll(
+                    this.naverDatalabScrapper.getCategory(null, 0, Optional.of("50000000"))
+            );
 
-			this.categoryService.findAll().forEach(category -> {
-				this.naverDatalabScrapper.getCategory(null, 0, Optional.of(category.getCid()));
-				this.categoryService.saveAll( this.naverDatalabScrapper.getCategory(category, 1, Optional.of(category.getCid())) );
+            firstCategoryList.forEach(firstCategory -> {
+				// this.naverDatalabScrapper.getCategory(null, 0, Optional.of(firstCategory.getCid()));
+				List<Category> secondCategoryList = this.categoryService.saveAll(
+				        this.naverDatalabScrapper.getCategory(firstCategory, 1, Optional.of(firstCategory.getCid()))
+                );
+                secondCategoryList.forEach(secondCategory -> {
+                    // this.naverDatalabScrapper.getCategory(secondCategory, 1, Optional.of(secondCategory.getCid()));
+                    List<Category> thirdCategoryList = this.categoryService.saveAll(
+                            this.naverDatalabScrapper.getCategory(secondCategory, 2, Optional.of(secondCategory.getCid()))
+                    );
+                });
 			});
 
 			Stream.of("Tom", "Jack", "Apple")
