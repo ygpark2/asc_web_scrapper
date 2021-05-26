@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+    <title>제품 트렌드 검색</title>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            M.AutoInit();
+            // var elems = document.querySelectorAll('.collapsible');
+            // var instances = M.Collapsible.init(elems, options);
+        });
+
+    </script>
+</head>
+
+<body>
+
+<section layout:fragment="app-content">
+
+    <div class="section no-pad-bot" id="index-banner">
+        <div class="container">
+
+            <div class="row">
+                <form class="col s12" method="get" id="formSch" action="./home">
+                    <div class="row">
+                        <div class="col s12 center-align">
+                            제품 이름 :
+                            <div class="input-field inline">
+                                <input id="schKey" type="text" class="validate" name="key" th:value="${key}" >
+                                <label for="schKey">제품 검색</label>
+                                <span class="helper-text" data-error="wrong" data-success="right">조회 하기 위한 제품명을 입력해 주세요!</span>
+                            </div>
+                            <button class="btn waves-effect waves-light" type="submit" name="action">검색
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="section">
+
+            <!--   Shop Section   -->
+            <div class="row">
+                <div class="col s12 m12">
+
+                    <ul class="collapsible popout">
+                        <li th:each="item, iStat : ${shop?.items}">
+                            <div class="collapsible-header">
+                                <i class="material-icons">filter_drama</i>[(${item?.title})]
+                            </div>
+                            <div class="collapsible-body">
+                                <div class="card">
+                                    <div class="card-image waves-effect waves-block waves-light">
+                                        <img class="activator" th:src="${item?.image}">
+                                    </div>
+                                    <div class="card-content">
+                                        <span class="card-title activator grey-text text-darken-4">
+                                            [(${item?.title})]
+                                            <i class="material-icons right">more_vert</i>
+                                        </span>
+                                        <p>가격 : [[${item?.lprice}]] ~ [[${item?.hprice}]] </p>
+                                        <p>상점 : [[${item?.mallName}]]</p>
+                                        <p>아이디 : [[${item?.productId}]]</p>
+                                        <p>타입 : [[${item?.productType}]]</p>
+                                        <p>브렌드 : [[${item?.brand}]]</p>
+                                        <p>메이커 : [[${item?.maker}]]</p>
+                                        <p><a th:href="${item?.link}" target="_blank">제품 보기</a></p>
+                                    </div>
+                                    <div class="card-reveal">
+                                        <span class="card-title grey-text text-darken-4">
+                                            [(${item?.title})]
+                                            <i class="material-icons right">close</i>
+                                        </span>
+                                        <p>카테고리 1: [[${item?.category1}]]</p>
+                                        <p>카테고리 2: [[${item?.category2}]]</p>
+                                        <p>카테고리 3: [[${item?.category3}]]</p>
+                                        <p>카테고리 4: [[${item?.category4}]]</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul class="pagination center-align" th:if="${shop}">
+                        <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="active"><a href="#!">1</a></li>
+                        <li class="waves-effect"><a href="#!">2</a></li>
+                        <li class="waves-effect"><a href="#!">3</a></li>
+                        <li class="waves-effect"><a href="#!">4</a></li>
+                        <li class="waves-effect"><a href="#!">5</a></li>
+                        <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!--   News Section   -->
+            <div class="row">
+                <div class="col s12 m12">
+
+                    <ul class="collapsible popout">
+                        <li th:each="item, iStat : ${news?.items}">
+                            <div class="collapsible-header">
+                                <i class="material-icons">filter_drama</i> [(${item?.title})]
+                            </div>
+                            <div class="collapsible-body">
+
+                                <p th:utext="${item?.description}">description</p>
+                                <span th:text="${item?.pubDate}">pubDate</span>
+                                <p><a th:href="${item?.originallink}" target="_blank">원본 기사 보기</a></p>
+                                <p><a th:href="${item?.link}" target="_blank">기사 보기</a></p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <br><br>
+    </div>
+</section>
+
+</body>
+</html>

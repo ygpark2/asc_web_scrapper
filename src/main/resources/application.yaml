@@ -1,0 +1,97 @@
+
+spring:
+  application:
+    name: asc-spring-data-mybatis
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:h2:file:/home/ygpark2/pjt/asc/database/h2/data/asc_datalab
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+    # url: jdbc:postgresql://postgres:5432/projectdb
+    # driver-class-name: org.postgresql.Driver
+    # username: postgres
+    # password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+      #    hibernate:
+    #      ddl-auto: validate
+      #    properties:
+      #      hibernate:
+      #        dialect: org.hibernate.dialect.PostgreSQLDialect
+      #        jdbc:
+      #          lob:
+#            non_contextual_creation: true
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:/com/asc/als/mappers/*Mapper.xml
+
+retrofit:
+  global-converter-factories:
+    - retrofit2.converter.jackson.JacksonConverterFactory
+  global-call-adapter-factories:
+    - com.github.lianjiatech.retrofit.spring.boot.core.BodyCallAdapterFactory
+    - com.github.lianjiatech.retrofit.spring.boot.core.ResponseCallAdapterFactory
+  degrade:
+    enable: true
+    degrade-type: sentinel
+    resource-name-parser: com.github.lianjiatech.retrofit.spring.boot.degrade.DefaultResourceNameParser
+  retry:
+    enable-global-retry: true
+    global-interval-ms: 20
+    global-max-retries: 10
+    global-retry-rules:
+      - response_status_not_2xx
+    retry-interceptor: com.github.lianjiatech.retrofit.spring.boot.retry.DefaultRetryInterceptor
+  log:
+    enable: true
+    logging-interceptor: com.github.lianjiatech.retrofit.spring.boot.interceptor.DefaultLoggingInterceptor
+  pool:
+    test1:
+      max-idle-connections: 3
+      keep-alive-second: 100
+    test2:
+      max-idle-connections: 5
+      keep-alive-second: 50
+api:
+  naver:
+    search:
+      baseUrl: https://openapi.naver.com/v1/search/
+    datalab:
+      baseUrl: https://openapi.naver.com/v1/datalab/
+    accessKeyId: O49uTaOsUcQ752_q9VgX
+    accessKeySecret: vupgOXfEU0
+
+
+selenium:
+  web-driver-path: selenium/chromedriver
+  web-driver-type: webdriver.chrome.driver
+  web-driver-page-load-timeout: 600
+
+scrapper:
+  naver:
+    datalab: https://datalab.naver.com/shoppingInsight/sCategory.naver
+
+
+covid19:
+  worldometers-site: https://www.worldometers.info/coronavirus/
+  total-coronavirus-cases-key: Coronavirus Cases
+  total-coronavirus-deaths-key: Deaths
+  total-coronavirus-recovered-key: Recovered
+  active-cases-panel-heading-key: Active Cases
+  closed-cases-panel-heading-key: Closed Cases
+  report-path: selenium/reports/
+  report-file-name: covid19Reporting
+

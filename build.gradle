@@ -1,0 +1,89 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'idea'
+
+def jarName = 'asc_alc.jar'
+
+group = 'com.asc.als'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 11.0
+targetCompatibility = 11.0
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+ext {
+	springDataMybatisVersion = '2.0.2.BUILD-SNAPSHOT' // '2.0.1.RELEASE'
+	querydslVersion = '4.4.0'
+	jodatimeVersion = '2.10.6'
+    retrofitSpringBootVersion = '2.2.10'
+    okhttpVersion = '4.9.1'
+	seleniumVersion = '3.141.59'
+	jsoupVersion = '1.13.1'
+}
+
+idea {
+	module {
+
+	}
+}
+
+
+repositories {
+	mavenCentral()
+	maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
+dependencies {
+	implementation "io.easybest:spring-data-mybatis-boot-starter:$springDataMybatisVersion"
+	implementation "io.easybest:spring-data-mybatis-querydsl:$springDataMybatisVersion"
+    implementation "com.github.lianjiatech:retrofit-spring-boot-starter:$retrofitSpringBootVersion"
+	implementation "org.springframework.boot:spring-boot-starter-data-rest"
+	// implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+	implementation "org.springframework.boot:spring-boot-starter-logging"
+	implementation "org.springframework.boot:spring-boot-starter-actuator"
+	implementation "org.springframework.boot:spring-boot-starter-validation"
+
+	implementation group: 'org.jsoup', name: 'jsoup', version: jsoupVersion
+	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: seleniumVersion
+
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: okhttpVersion
+	implementation group: 'joda-time', name: 'joda-time', version: jodatimeVersion
+    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-joda'
+
+	implementation 'org.flywaydb:flyway-core'
+
+	testImplementation 'org.testcontainers:postgresql:1.14.2'
+
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'com.h2database:h2'
+
+	annotationProcessor group: 'org.projectlombok', name: 'lombok'
+    annotationProcessor group: 'io.easybest', name: 'spring-data-mybatis-querydsl', version: springDataMybatisVersion
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	testCompile "org.testcontainers:testcontainers:1.14.1"
+
+}
+
+clean {
+	delete file('src/main/generated')   // 인텔리제이 Annotation processor 생성물 생성위치
+}
+
+test {
+	useJUnitPlatform()
+}
+
+bootJar {
+	archiveName(jarName)
+}
