@@ -85,9 +85,6 @@ public class NaverDatalabScrapperService implements ScrapperService<String> {
 
         WebDriverWait wait = new WebDriverWait(webDriver, 10);
 
-        // 카테고리 버튼 클릭
-        List<WebElement> selectBtnList = webDriver.findElements(By.cssSelector("span[class='select_btn']"));
-
         List<WebElement> ulList = webDriver.findElements(By.cssSelector("ul[class='select_list scroll_cst']"));
 
         if (index > 0) {
@@ -98,6 +95,9 @@ public class NaverDatalabScrapperService implements ScrapperService<String> {
                     .ifPresent(e -> wait.until(ExpectedConditions.visibilityOf(e)).click());
             System.out.println("index => " + index);
         }
+
+        // 카테고리 버튼 클릭
+        List<WebElement> selectBtnList = webDriver.findElements(By.cssSelector("span[class='select_btn']"));
 
         selectBtnList.get(index).click();
 
